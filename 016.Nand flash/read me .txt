@@ -1,0 +1,1 @@
+3th 支持nand 和nor启动

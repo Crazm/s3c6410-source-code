@@ -1,0 +1,65 @@
+.global _start
+.section .text
+
+_start:
+
+    /*
+     * set the CPU to SVC32 mode
+     */
+    mrs r0,cpsr
+    bic r0,r0,#0x1f        @ clear the last 5 bits
+    orr r0,r0,#0xd3        @ 0b11010011, set the svc mod, and disable fiq irq
+    msr cpsr,r0
+
+    /*
+     * flush v4 I/D cahces
+     */
+    mov r0,#0
+    mcr p15, 0, r0, c7, c7, 0        /* flush v3/v4 cache */
+    mcr p15, 0, r0, c8, c7, 0        /* flush the v4 TLB */
+
+    /*
+     * disable MMU stuff and caches
+     */
+    mrc p15, 0, r0, c1, c0, 0
+    bic    r0, r0, #0x00002300    @ clear bits 13, 9:8 (--V- --RS)
+    bic    r0, r0, #0x00000087    @ clear bits 7, 2:0 (B--- -CAM)
+    orr    r0, r0, #0x00000002    @ set bit 2 (A) Align
+    orr    r0, r0, #0x00001000    @ set bit 12 (I) I-Cache
+    mcr    p15, 0, r0, c1, c0, 0
+
+    /* peripheral port register address range set */
+    ldr r0, =0x70000000    
+    orr r0, #0x13       
+    mcr p15,0,r0,c15,c2,4
+    
+    /* disable the watchdog */
+    ldr r0, =0x7E004000
+    mov r1, #0
+    str r1, [r0]
+    
+    b user_program
+
+    /*
+     * LED1 <----> GPK4
+     * LED2 <----> GPK5
+     * LED3 <----> GPK6
+     * LED4 <----> GPK7
+     */
+user_program:
+    /************** control the led ***************/
+    /* control led1 GPK4 */
+    ldr r0, =0x7F008800
+    ldr r1, =0x00100000
+    str r1, [r0]        /* set GPK5 as output*/
+
+    ldr r0, =0x7F008808
+    ldr r1, [r0]
+    bic r1, #0x20        /* clear the bit 5 */
+    str r1, [r0]
+    b loop
+
+loop:
+    b loop
+
+.end

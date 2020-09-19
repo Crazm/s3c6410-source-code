@@ -1,0 +1,152 @@
+
+led_on_c.elf:     file format elf32-littlearm
+
+
+Disassembly of section .text:
+
+00000000 <_start>:
+   0:	e3a00207 	mov	r0, #1879048192	; 0x70000000
+   4:	e3800013 	orr	r0, r0, #19
+   8:	ee0f0f92 	mcr	15, 0, r0, cr15, cr2, {4}
+   c:	e59f002c 	ldr	r0, [pc, #44]	; 40 <halt+0x4>
+  10:	e3a01000 	mov	r1, #0
+  14:	e5801000 	str	r1, [r0]
+  18:	e3a01000 	mov	r1, #0
+  1c:	e5910000 	ldr	r0, [r1]
+  20:	e5811000 	str	r1, [r1]
+  24:	e5912000 	ldr	r2, [r1]
+  28:	e1510002 	cmp	r1, r2
+  2c:	e59fd010 	ldr	sp, [pc, #16]	; 44 <halt+0x8>
+  30:	03a0da01 	moveq	sp, #4096	; 0x1000
+  34:	05810000 	streq	r0, [r1]
+  38:	eb000031 	bl	104 <main>
+
+0000003c <halt>:
+  3c:	eafffffe 	b	3c <halt>
+  40:	7e004000 	cdpvc	0, 0, cr4, cr0, cr0, {0}
+  44:	40001000 	andmi	r1, r0, r0
+
+00000048 <led_switch>:
+  48:	e52db004 	push	{fp}		; (str fp, [sp, #-4]!)
+  4c:	e28db000 	add	fp, sp, #0
+  50:	e24dd014 	sub	sp, sp, #20
+  54:	e1a03000 	mov	r3, r0
+  58:	e54b300d 	strb	r3, [fp, #-13]
+  5c:	e55b300d 	ldrb	r3, [fp, #-13]
+  60:	e3530001 	cmp	r3, #1
+  64:	1a000001 	bne	70 <led_switch+0x28>
+  68:	e3a030e0 	mov	r3, #224	; 0xe0
+  6c:	e50b3008 	str	r3, [fp, #-8]
+  70:	e55b300d 	ldrb	r3, [fp, #-13]
+  74:	e3530002 	cmp	r3, #2
+  78:	1a000001 	bne	84 <led_switch+0x3c>
+  7c:	e3a030d0 	mov	r3, #208	; 0xd0
+  80:	e50b3008 	str	r3, [fp, #-8]
+  84:	e55b300d 	ldrb	r3, [fp, #-13]
+  88:	e3530003 	cmp	r3, #3
+  8c:	1a000001 	bne	98 <led_switch+0x50>
+  90:	e3a030b0 	mov	r3, #176	; 0xb0
+  94:	e50b3008 	str	r3, [fp, #-8]
+  98:	e55b300d 	ldrb	r3, [fp, #-13]
+  9c:	e3530004 	cmp	r3, #4
+  a0:	1a000001 	bne	ac <led_switch+0x64>
+  a4:	e3a03070 	mov	r3, #112	; 0x70
+  a8:	e50b3008 	str	r3, [fp, #-8]
+  ac:	e51b3008 	ldr	r3, [fp, #-8]
+  b0:	e1a00003 	mov	r0, r3
+  b4:	e28bd000 	add	sp, fp, #0
+  b8:	e8bd0800 	pop	{fp}
+  bc:	e12fff1e 	bx	lr
+
+000000c0 <delay>:
+  c0:	e52db004 	push	{fp}		; (str fp, [sp, #-4]!)
+  c4:	e28db000 	add	fp, sp, #0
+  c8:	e24dd00c 	sub	sp, sp, #12
+  cc:	e50b0008 	str	r0, [fp, #-8]
+  d0:	e1a00000 	nop			; (mov r0, r0)
+  d4:	e51b3008 	ldr	r3, [fp, #-8]
+  d8:	e3530000 	cmp	r3, #0
+  dc:	03a02000 	moveq	r2, #0
+  e0:	13a02001 	movne	r2, #1
+  e4:	e6ef2072 	uxtb	r2, r2
+  e8:	e2433001 	sub	r3, r3, #1
+  ec:	e50b3008 	str	r3, [fp, #-8]
+  f0:	e3520000 	cmp	r2, #0
+  f4:	1afffff6 	bne	d4 <delay+0x14>
+  f8:	e28bd000 	add	sp, fp, #0
+  fc:	e8bd0800 	pop	{fp}
+ 100:	e12fff1e 	bx	lr
+
+00000104 <main>:
+ 104:	e92d4800 	push	{fp, lr}
+ 108:	e28db004 	add	fp, sp, #4
+ 10c:	e24dd008 	sub	sp, sp, #8
+ 110:	e59f3088 	ldr	r3, [pc, #136]	; 1a0 <main+0x9c>
+ 114:	e50b3008 	str	r3, [fp, #-8]
+ 118:	e59f3084 	ldr	r3, [pc, #132]	; 1a4 <main+0xa0>
+ 11c:	e50b300c 	str	r3, [fp, #-12]
+ 120:	e51b3008 	ldr	r3, [fp, #-8]
+ 124:	e59f207c 	ldr	r2, [pc, #124]	; 1a8 <main+0xa4>
+ 128:	e5832000 	str	r2, [r3]
+ 12c:	e3a00001 	mov	r0, #1
+ 130:	ebffffc4 	bl	48 <led_switch>
+ 134:	e1a02000 	mov	r2, r0
+ 138:	e51b300c 	ldr	r3, [fp, #-12]
+ 13c:	e5832000 	str	r2, [r3]
+ 140:	e59f0064 	ldr	r0, [pc, #100]	; 1ac <main+0xa8>
+ 144:	ebffffdd 	bl	c0 <delay>
+ 148:	e3a00002 	mov	r0, #2
+ 14c:	ebffffbd 	bl	48 <led_switch>
+ 150:	e1a02000 	mov	r2, r0
+ 154:	e51b300c 	ldr	r3, [fp, #-12]
+ 158:	e5832000 	str	r2, [r3]
+ 15c:	e59f0048 	ldr	r0, [pc, #72]	; 1ac <main+0xa8>
+ 160:	ebffffd6 	bl	c0 <delay>
+ 164:	e3a00003 	mov	r0, #3
+ 168:	ebffffb6 	bl	48 <led_switch>
+ 16c:	e1a02000 	mov	r2, r0
+ 170:	e51b300c 	ldr	r3, [fp, #-12]
+ 174:	e5832000 	str	r2, [r3]
+ 178:	e59f002c 	ldr	r0, [pc, #44]	; 1ac <main+0xa8>
+ 17c:	ebffffcf 	bl	c0 <delay>
+ 180:	e3a00004 	mov	r0, #4
+ 184:	ebffffaf 	bl	48 <led_switch>
+ 188:	e1a02000 	mov	r2, r0
+ 18c:	e51b300c 	ldr	r3, [fp, #-12]
+ 190:	e5832000 	str	r2, [r3]
+ 194:	e59f0010 	ldr	r0, [pc, #16]	; 1ac <main+0xa8>
+ 198:	ebffffc8 	bl	c0 <delay>
+ 19c:	eaffffe2 	b	12c <main+0x28>
+ 1a0:	7f008800 	svcvc	0x00008800
+ 1a4:	7f008808 	svcvc	0x00008808
+ 1a8:	11110000 	tstne	r1, r0
+ 1ac:	00002710 	andeq	r2, r0, r0, lsl r7
+
+Disassembly of section .ARM.attributes:
+
+00000000 <.ARM.attributes>:
+   0:	00003341 	andeq	r3, r0, r1, asr #6
+   4:	61656100 	cmnvs	r5, r0, lsl #2
+   8:	01006962 	tsteq	r0, r2, ror #18
+   c:	00000029 	andeq	r0, r0, r9, lsr #32
+  10:	4d524105 	ldfmie	f4, [r2, #-20]	; 0xffffffec
+  14:	36373131 	undefined instruction 0x36373131
+  18:	2d465a4a 	vstrcs	s11, [r6, #-296]	; 0xfffffed8
+  1c:	09060053 	stmdbeq	r6, {r0, r1, r4, r6}
+  20:	01090108 	tsteq	r9, r8, lsl #2
+  24:	0412020a 	ldreq	r0, [r2], #-522	; 0x20a
+  28:	01150114 	tsteq	r5, r4, lsl r1
+  2c:	01180317 	tsteq	r8, r7, lsl r3
+  30:	031b021a 	tsteq	fp, #-1610612735	; 0xa0000001
+
+Disassembly of section .comment:
+
+00000000 <.comment>:
+   0:	3a434347 	bcc	10d0d24 <__bss_end__+0x10c8b74>
+   4:	74632820 	strbtvc	r2, [r3], #-2080	; 0x820
+   8:	312d676e 	teqcc	sp, lr, ror #14
+   c:	312e382e 	teqcc	lr, lr, lsr #16
+  10:	2941462d 	stmdbcs	r1, {r0, r2, r3, r5, r9, sl, lr}^
+  14:	352e3420 	strcc	r3, [lr, #-1056]!	; 0x420
+  18:	Address 0x00000018 is out of bounds.
+
